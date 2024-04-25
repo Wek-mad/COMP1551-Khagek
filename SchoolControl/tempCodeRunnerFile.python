@@ -1,0 +1,35 @@
+from faker import Faker
+import random
+
+fake = Faker()
+
+with open("insert_data.sql", "w") as file:
+    # Generate 10,000 people records
+    for _ in range(10000):
+        name = fake.name()
+        phone = fake.phone_number()
+        email = fake.email()
+        role = random.choice(['student', 'teacher', 'admin'])
+
+        # Write SQL insert statement for people table
+        file.write("INSERT INTO people (name, phone, email, role) VALUES ('{}', '{}', '{}', '{}');\n".format(name, phone, email, role))
+
+        # Insert additional data based on the role
+        if role == 'student':
+            current_subject1 = fake.word()
+            current_subject2 = fake.word()
+            previous_subject1 = fake.word()
+            previous_subject2 = fake.word()
+            file.write("INSERT INTO student (people_id, current_subject1, current_subject2, previous_subject1, previous_subject2) VALUES (LAST_INSERT_ID(), '{}', '{}', '{}', '{}');\n".format(current_subject1, current_subject2, previous_subject1, previous_subject2))
+        elif role == 'teacher':
+            salary = fake.random_number(digits=5)
+            subject1 = fake.word()
+            subject2 = fake.word()
+            file.write("INSERT INTO teacher (people_id, salary, subject1, subject2) VALUES (LAST_INSERT_ID(), {}, '{}', '{}');\n".format(salary, subject1, subject2))
+        elif role == 'admin':
+            salary = fake.random_number(digits=5)
+            employment_type = random.choice(['Full-time', 'Part-time'])
+            working_hours = random.randint(20, 40)
+            file.write("INSERT INTO admin (people_id, salary, employment_type, working_hours) VALUES (LAST_INSERT_ID(), {}, '{}', {});\n".format(salary, employment_type, working_hours))
+
+print("SQL insert statements written to insert_data.sql file.")
