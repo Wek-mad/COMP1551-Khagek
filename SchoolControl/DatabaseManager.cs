@@ -14,7 +14,8 @@ public class DatabaseManager
     private static byte[] _data = null;
     public static void InitializeDatabase()
     {
-        _data = File.ReadAllBytes("default.png");
+        string defaultImagePath = "../../default.png";
+        _data = File.ReadAllBytes(defaultImagePath);
         using (MySqlConnection connection = new MySqlConnection(ConnectionString))
         {
             connection.Open();
